@@ -32,7 +32,7 @@
                 </li>
                 <li><a href="#clients" class="nav-link">Clients</a></li>
                 <li class="has-dropdown">
-                    <button class="nav-link" aria-expanded="false">Committees <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+                    <button class="nav-link" aria-expanded="false">Committees <svg class="chev" viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
                     <ul class="dropdown">
                         <li><a href="#">Technicals</a></li>
                         <li><a href="#">Decorations</a></li>
@@ -72,31 +72,23 @@
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
     <div class="hero-grid">
-        <div class="hero-lockup">
-            <p class="hero-lockup-line">Commit.</p>
-            <p class="hero-lockup-line">Connect.</p>
-            <p class="hero-lockup-meet">Meet.</p>
-        </div>
-
-        <div class="hero-pitch">
-            <p class="eyebrow">Aspirants,</p>
-            <h1>Find where your skills<br>can make an impact.</h1>
-
-            <form class="hero-search" role="search" action="#" method="get">
-                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4.5-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                <input type="text" name="q" placeholder="Organizations, people, skills…" aria-label="Search organizations, people, or skills">
-                <button type="submit">Search</button>
-            </form>
-        </div>
-
-        <div class="seat-badge">
-            <svg viewBox="0 0 140 150" width="120" height="128" aria-hidden="true">
-                <path d="M20 40 L20 15 Q20 5 30 5 L110 5 Q120 5 120 15 L120 40 L130 40 L130 90 L110 90 L110 65 L30 65 L30 90 L10 90 L10 40 Z" fill="none" stroke="currentColor" stroke-width="3"/>
-                <path d="M30 90 L30 140 L45 140 L45 105 L95 105 L95 140 L110 140 L110 90" fill="none" stroke="currentColor" stroke-width="3"/>
-            </svg>
-            <span>Your seat<br>is reserved</span>
+         <div class="hero-pitch">
+                <img src="assets/toptext.svg" alt="description" width="24" height="24">
+                <div> <p class="aspirants">ASPIRANTS,</p>
+                <h1 class = "line">Find where your skills<br>can make an impact.</h1>
+                </div>
         </div>
     </div>
+
+    <div class = "hero-box-for-search">
+            <form class="hero-search" role="search" action="#" method="get">
+                <input type="search" name="q" placeholder="Organizations, People, Skills…" aria-label="Search tab">
+                <button type="submit" aria-label="Search">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4.5-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+            </form>
+        </div>
+        
 </section>
 
 <!-- ============ CATEGORIES ============ -->
