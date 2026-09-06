@@ -66,9 +66,12 @@
 <section class="hero" id="top">
     <div class="hero-grid">
          <box class="hero-pitch">
-                <img src="assets/toptext.svg" alt="description" width="24" height="24">
-                <div> <p class="aspirants">ASPIRANTS,</p>
-                <h1 class = "line">Find where your skills<br>can make an impact.</h1>
+                <img src="assets/toptext.svg" alt="description">
+                        <div> <p class="aspirants">ASPIRANTS,</p>
+                            <h1 class = "line">Find where your skills<br>can make an impact.</h1>
+                            </div>
+                        <div>
+                    <p class="spotlight-caption">Connect with university committees that match your responsibility, interests, and availability.</p>
                 </div>
         </box>
     </div>
