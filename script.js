@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropdownParents = document.querySelectorAll('.has-dropdown');
 
     dropdownParents.forEach(parent => {
-        const trigger = parent.querySelector('.nav-link');
+        const trigger = parent.querySelector('.nav-pill');
         if (!trigger) return;
 
         const closeDropdown = () => {
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', () => {
         dropdownParents.forEach(p => {
             p.classList.remove('is-open');
-            const trigger = p.querySelector('.nav-link');
+            const trigger = p.querySelector('.nav-pill');
             if (trigger) trigger.setAttribute('aria-expanded', 'false');
         });
     });

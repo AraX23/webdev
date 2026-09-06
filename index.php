@@ -21,18 +21,11 @@
 
         <nav class="primary-nav" aria-label="Primary">
             <ul>
-                <li><a href="#top" class="nav-pill nav-pill--active">Home</a></li>
+                <li><a href="#top" class="nav-pill">Home</a></li>
+                <li><a href="#aspirants" class="nav-pill" aria-expanded="false">Aspirants</a></li>
+                <li><a href="#clients" class="nav-pill">Clients</a></li>
                 <li class="has-dropdown">
-                    <button class="nav-link" aria-expanded="false">Aspirants <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
-                    <ul class="dropdown">
-                        <li><a href="#">Browse Committees</a></li>
-                        <li><a href="#">How Matching Works</a></li>
-                        <li><a href="#">Success Stories</a></li>
-                    </ul>
-                </li>
-                <li><a href="#clients" class="nav-link">Clients</a></li>
-                <li class="has-dropdown">
-                    <button class="nav-link" aria-expanded="false">Committees <svg class="chev" viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+                <button class="nav-pill" aria-expanded="false">Committees <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
                     <ul class="dropdown">
                         <li><a href="#">Technicals</a></li>
                         <li><a href="#">Decorations</a></li>
@@ -42,7 +35,7 @@
                         <li><a href="#">Finance</a></li>
                     </ul>
                 </li>
-                <li><a href="#about" class="nav-link">About Us</a></li>
+                <li><a href="#about" class="nav-pill">About Us</a></li>
             </ul>
         </nav>
 
@@ -95,16 +88,16 @@
 <section class="categories" id="aspirants">
     <div class="categories-grid">
                 <div class="category-card" style="--i:0">
-            <img src="assets/category-individual.jpg" alt="Individual Aspirants">
-            <span class="category-tag">Individual<br><small>Aspirants</small></span>
+                <img src="assets/category-individual.jpg" alt="Individual Aspirants">
+                 <span class="category-tag">INDIVIDUAL<br><small>ASPIRANTS</small></span>
         </div>
         <div class="category-card" style="--i:1">
             <img src="assets/category-independent.jpg" alt="Independent Clients">
-            <span class="category-tag">Independent<br><small>Clients</small></span>
+            <span class="category-tag">INDEPENDENT<br><small>CLIENTS</small></span>
         </div>
         <div class="category-card" style="--i:2">
             <img src="assets/category-organization.jpg" alt="Organization Clients">
-            <span class="category-tag">Organization<br><small>Clients</small></span>
+            <span class="category-tag">ORGANIZATION<br><small>CLIENTS</small></span>
         </div>
     </div>
 

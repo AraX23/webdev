@@ -15,6 +15,7 @@
     --cream: #faf8f3;
 
     --font-display: 'Climate Crisis', sans-serif;
+    --font-weight: 200;
     --font-body: 'Century Gothic', sans-serif;
 
     --radius-sm: 8px;
@@ -60,13 +61,12 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 25%;
-    display: block;
+    object-position: center;
+    display: flex;
 }
 .page-bg-overlay {
     position: absolute;
     inset: 0;
-    z-index: -1;
     /* tints the whole photo toward the brand navy so glass panels
        of any translucency read consistently over it */
     background: linear-gradient(180deg, rgba(21,17,47,0.55) 0%, rgba(21,17,47,0.7) 100%);
@@ -78,7 +78,7 @@ button { font-family: inherit; cursor: pointer; }
 
 /* =========================== NAV =========================== */
 .site-header {
-    position: flex;
+    position: sticky;
     top: 0;
     z-index: 50;
     background: rgba(250, 246, 238, 0.88);
@@ -107,11 +107,12 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .primary-nav { flex: 1; display: flex; justify-content: center; }
-.primary-nav > ul { display: flex; align-items: center; gap: 0.25rem; }
+.primary-nav > ul { display: flex; align-items: center; gap: 0.25rem;}
 
-.nav-link, .nav-pill {
+.nav-pill {
     display: inline-flex;
     align-items: center;
+    z-index: 50;
     gap: 0.3rem;
     background: none;
     border: none;
@@ -122,14 +123,21 @@ button { font-family: inherit; cursor: pointer; }
     color: var(--ink-soft);
     transition: background 0.15s ease, color 0.15s ease;
 }
-.nav-link:hover { background: rgba(33, 29, 84, 0.08); color: var(--navy); }
-.nav-pill--active { background: var(--navy); color: var(--white); }
-.nav-pill--active:hover { background: var(--navy); color: var(--white); }
+.nav-pill:hover { 
+    background: var(--navy); 
+    color: var(--white); 
+    text-transform: uppercase;
+    padding: 10px;
+    border-radius: 10px;
+    outline: 2px solid var(--white);
+}
+
 .chev { margin-top: 1px; }
 
 .has-dropdown { position: relative; }
 .dropdown {
     position: absolute;
+    z-index: 100;
     top: calc(100% + 8px);
     left: 0;
     min-width: 200px;
@@ -195,7 +203,7 @@ button { font-family: inherit; cursor: pointer; }
     display: none;
     max-height: 0;
     overflow: hidden;
-    background: solid rgba(250, 246, 238, 0.95);
+    background: rgba(250, 246, 238, 0.95);
     backdrop-filter: blur(14px);
     transition: max-height 0.25s ease;
     border-top: 1px solid rgba(23,20,38,0.08);
@@ -207,21 +215,20 @@ button { font-family: inherit; cursor: pointer; }
 
 /* =========================== HERO =========================== */
 .hero {
-background-image: url('assets/hero-bg.png');
-display: flex;
-top: 40px;
-min-width: 100%;
-min-height: 780px;
-align-items: center;
-justify-content: center;
+    position: relative; /* fixes the scrim bug */
+    background-image: url('assets/hero-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    min-height:780px;
+    align-items: center;
+    justify-content: center;
 }
 
 #top {
-    display: flex;
-    background-image: flex;
     background-image: url('assets/hero-bg.png');
-    background-size: cover;      /* scales image to fill the div */
-    background-position: center; /* centers the image */
+    background-size: cover;      
     background-repeat: no-repeat;
 }
 
@@ -229,16 +236,13 @@ justify-content: center;
 .hero-scrim {
     position: absolute;
     inset: 0;
-   /*extra darkening only within the hero, since this is where the
-       largest text sits directly over the busiest part of the photo */
-
     background:
-       linear-gradient(180deg, rgba(21,17,47,0.25) 0%, rgba(21,17,47,0.1) 35%, rgba(21,17,47,0.45) 100%),
-        linear-gradient(90deg, rgba(21,17,47,0.45) 0%, rgba(21,17,47,0.05) 30%, rgba(21,17,47,0.05) 70%, rgba(21,17,47,0.45) 100%); 
+    linear-gradient(180deg, rgba(21,17,47,0.25) 0%, rgba(21,17,47,0.1) 35%, rgba(21,17,47,0.45) 100%),
+    linear-gradient(90deg, rgba(21,17,47,0.45) 0%, rgba(21,17,47,0.05) 30%, rgba(21,17,47,0.05) 70%, rgba(21,17,47,0.45) 100%); 
 } 
 
 .hero-grid {
-    position: flex;
+    position: relative;
     z-index: 1;
     max-width: 1280px;
     margin: 0 auto;
@@ -249,31 +253,25 @@ justify-content: center;
 }
 
 .hero-pitch {
-    position: flex;
+    grid-column: 1;
+    grid-row: 1;
     display: flex;
-    width: 400px;
-    height: 400px;
-    margin-top: -21rem;
-    margin-left: -36rem;
-    left: 5rem;
+    flex-direction: column;
+    gap: 1rem;
 } 
 
 .hero-pitch img {
-    position: flex;
-    display: flex;
-    width: minmax(500px, 100%);
-    height: minmax(90px, 100%);
+  width: 100px;  
+  height: auto;
 }
 
 .aspirants {
     font-family: 'Century Gothic', sans-serif;
-    position: flex;
     font-weight: bold;
     font-size: 40px;
-    letter-spacing: 0em;
     text-shadow: 0 2px 18px rgba(21,17,47,0.55);
     color: var(--white);
-    margin: -0.3rem;
+    margin: -0.3rem 0 0;
 }
 
 .line {
@@ -288,19 +286,6 @@ justify-content: center;
     line-height: 1.15;
     text-shadow: 0 2px 18px rgba(21,17,47,0.55);
 }
-
-/*
-.hero-pitch h1 {
-    margin: 0 0 1.75rem;
-    letter-spacing: 0.1em;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
-    color: var(--white);
-    line-height: 1.15;
-    text-shadow: 0 2px 18px rgba(21,17,47,0.55);
-}
-*/
 
 .hero-box-for-search {
   display: flex;
@@ -317,7 +302,7 @@ justify-content: center;
 
 @media (max-width: 600px) {
   .hero-search {
-    max-width: 90%; /* shrinks to fit small screens */
+    max-width: 90%; 
     padding: 0 8px 0 16px;
   }
 }
@@ -494,27 +479,34 @@ justify-content: center;
     transition: transform 0.4s ease;
 }
 .category-card:hover img { transform: scale(1.06); }
+
 .category-tag {
     position: absolute;
+    z-index:1;
     left: 50%;
     bottom: 1rem;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(60%);
     background: var(--navy);
     color: var(--white);
-    font-family: var(--font-display);
-    font-weight: 700;
+    font-family: var(--font-body);
+    font-weight: var(--font-weight);
     font-size: 0.95rem;
     line-height: 1.3;
-    padding: 0.6rem 1.4rem;
-    border-radius: 999px;
+    padding: 10px;
+    border-radius: 10px;
+    outline: 2px solid var(--white);
     white-space: nowrap;
-    box-shadow: 0 8px 20px rgba(21,17,47,0.4);
+    box-shadow: 20px 30px 20px rgba(21,17,47,0.4);
 }
-.category-tag small { font-family: var(--font-body); font-weight: 500; font-size: 0.7rem; color: var(--orange); text-transform: uppercase; letter-spacing: 0.06em; }
+.category-tag small { font-family: var(--font-body); font-weight: var(--font-weight); font-size: 0.7rem; color: var(--orange); letter-spacing: 0.06em; }
+.category-tag:hover { 
+    box-shadow: 0 20px 40px rgba(21,17,47,0.5);
+    transform: translateX(-55%) translateY(55%);
+}
 
 .categories-copy h2 {
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 5px;
     font-size: clamp(1.6rem, 3.4vw, 2.4rem);
     color: var(--white);
     margin: 0 0 0.9rem;
