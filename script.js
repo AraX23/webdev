@@ -1,4 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
+   /* ---- Nav Bar Additons ----------*/
+   let lastScrollY = window.scrollY;
+const header = document.querySelector('.site-header');
+
+window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // scrolling down — hide the header
+        header.style.transform = 'translateY(-100%)';
+    } else {
+        // scrolling up — show the header
+        header.style.transform = 'translateY(0)';
+    }
+
+    lastScrollY = currentScrollY;
+});
+   
     /* ---------- Mobile menu toggle ---------- */
     const hamburger = document.getElementById('hamburger');
     const mobileNav = document.getElementById('mobileNav');

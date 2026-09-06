@@ -40,9 +40,9 @@
         </nav>
 
         <div class="nav-actions">
-            <a href="#" class="link-ghost">Log In</a>
+            <a href="#" class="link-ghost">LOG IN</a>
             <span class="divider" aria-hidden="true"></span>
-            <a href="#" class="btn btn--orange">Sign Up</a>
+            <a href="#" class="link-ghost">SIGN UP</a>
             <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
                 <span></span><span></span><span></span>
             </button>
@@ -65,22 +65,20 @@
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
     <div class="hero-grid">
-         <div class="hero-pitch">
+         <box class="hero-pitch">
                 <img src="assets/toptext.svg" alt="description" width="24" height="24">
                 <div> <p class="aspirants">ASPIRANTS,</p>
                 <h1 class = "line">Find where your skills<br>can make an impact.</h1>
                 </div>
-        </div>
+        </box>
     </div>
-
     <div class = "hero-box-for-search">
-            <form class="hero-search" role="search" action="#" method="get">
-                <input type="search" name="q" placeholder="Organizations, People, Skills…" aria-label="Search tab">
-                <button type="submit" aria-label="Search">
-                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4.5-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </button>
-            </form>
-        </div>
+        <form class="hero-search" role="search" action="#" method="get">
+            <input type="search" name="q" placeholder="Organizations, People, Skills…" aria-label="Search tab">
+            <button type="submit" aria-label="Search"> <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4.5-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+        </form>
+    </div>
         
 </section>
 

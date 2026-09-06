@@ -79,11 +79,13 @@ button { font-family: inherit; cursor: pointer; }
 /* =========================== NAV =========================== */
 .site-header {
     position: sticky;
+    height: 5rem;
     top: 0;
     z-index: 50;
-    background: rgba(250, 246, 238, 0.88);
+    background: var(--white);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid rgba(23,20,38, 0.08);
+    transition: transform 0.3s ease;
 }
 
 .nav-wrap {
@@ -100,9 +102,11 @@ button { font-family: inherit; cursor: pointer; }
     align-items: center;
     flex-shrink: 0;
 }
+
 .brand-logo {
-    height: 40px;
+    height: 60px;
     width: auto;
+    margin: 0;
     display: block;
 }
 
@@ -117,11 +121,12 @@ button { font-family: inherit; cursor: pointer; }
     background: none;
     border: none;
     padding: 0.55rem 0.9rem;
-    border-radius: 999px;
-    font-size: 0.95rem;
-    font-weight: 600;
+    border-radius: 9px;
+    color: inherit; 
+    text-decoration: none;
     color: var(--ink-soft);
     transition: background 0.15s ease, color 0.15s ease;
+    margin-inline-start: 40px;
 }
 .nav-pill:hover { 
     background: var(--navy); 
@@ -165,8 +170,8 @@ button { font-family: inherit; cursor: pointer; }
 .dropdown li a:hover { background: var(--cream); color: var(--navy); }
 
 .nav-actions { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
-.link-ghost { font-weight: 600; font-size: 0.9rem; color: var(--ink-soft); }
-.link-ghost:hover { color: var(--navy); }
+.link-ghost { color: inherit; text-decoration: none; color: var(--ink-soft); }
+.link-ghost:hover { color: var(--navy); font-weight: var(--font-weight);}
 .divider { width: 1px; height: 18px; background: rgba(23,20,38,0.15); }
 
 .btn {
@@ -288,16 +293,24 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .hero-box-for-search {
-  display: flex;
-  position: flex;
-  top: 1rem;
-  right: 3px;
-  background: rgba(255, 255, 255, 0.462);
+  position: absolute;
+  top: 50px;
+  right: 30px;
+  display:flex;
+  background: rgba(255, 255, 255, 0.684);
   backdrop-filter: blur(1px);
-  border-radius: 300px;
-  padding: 0 3px 0 24px;
-  max-width: 400px;
+  border-radius: 450px;
+  padding: 0 5px 0 20px;
+  min-width: 320px;
+  width: 400px;
+  height: 35px;
   box-shadow: var(--shadow-lift);
+}
+
+.hero-search {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 @media (max-width: 600px) {
@@ -324,7 +337,7 @@ button { font-family: inherit; cursor: pointer; }
     color: var(--gray-900);
     border: none;
     border-radius: 999px;
-    padding: 0.5rem 1.1rem;
+    padding: 0.1rem 1.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -332,46 +345,6 @@ button { font-family: inherit; cursor: pointer; }
 }
 .hero-search button:hover { background: var(--cream); }
 
-.seat-badge {
-    grid-column: 1;
-    grid-row: 2;
-    align-self: end;
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    color: var(--white);
-    max-width: 260px;
-}
-.seat-badge svg { color: var(--orange); flex-shrink: 0; transition: transform 0.2s ease; }
-.seat-badge:hover svg { transform: translateY(-3px); }
-.seat-badge span {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.05rem;
-    line-height: 1.25;
-    text-shadow: 0 2px 12px rgba(21,17,47,0.6);
-}
-
-.spotlight-frame {
-    grid-column: 2;
-    grid-row: 2;
-    border: 2px solid rgba(255,255,255,0.55);
-    border-radius: var(--radius-md);
-    padding: 1.5rem;
-    background: rgba(21,17,47,0.45);
-    backdrop-filter: blur(6px);
-    box-shadow: 0 12px 30px rgba(21,17,47,0.35);
-}
-.spotlight-photo {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    object-position: center 30%;
-    border-radius: var(--radius-sm);
-    margin-bottom: 1.1rem;
-    display: block;
-}
-.spotlight-caption { margin: 0; color: rgba(255,255,255,0.9); font-size: 1.05rem; line-height: 1.5; max-width: 34ch; }
 
 /* ---------- scroll-reveal (applied via script.js to .category-card / .testimonial-card) ---------- */
 .category-card,
