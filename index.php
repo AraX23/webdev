@@ -12,46 +12,50 @@
 </head>
 <body>
 
-<!-- ============ NAV ============ -->
+<!-- ============ NAV BAR ============ -->
 <header class="site-header">
     <div class="nav-wrap">
         <a href="#top" class="brand" aria-label="HOME">
             <img src="assets/logo.png" alt="ComMEETtee" class="brand-logo">
         </a>
 
+<!-- ============ NAV BAR ============ -->
+<!-- ============ main 5 ============ -->
         <nav class="primary-nav" aria-label="Primary">
             <ul>
                 <li><a href="#top" class="nav-pill">Home</a></li>
                 <li><a href="#aspirants" class="nav-pill" aria-expanded="false">Aspirants</a></li>
-
                 <li class="has-dropdown">
-                <button class="nav-pill nav-pill-size" aria-expanded="false">Clients <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
-                <ul class="dropdown">
-                        <li><a href="#">All Clients</a></li>
-                        <li><a href="#">Independent Clients</a></li>
-                        <li><a href="#">Organization Client</a></li>
-                    </ul>
+                    <button class="nav-pill nav-pill-size" aria-expanded="false">Clients <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+                        <ul class="dropdown">
+                            <li><a href="#">All Clients</a></li>
+                            <li><a href="#">Independent Clients</a></li>
+                            <li><a href="#">Organization Client</a></li>
+                        </ul>
                 </li>
-
                 <li class="has-dropdown">
-                <button class="nav-pill nav-pill-size" aria-expanded="false">Committees <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
-                    <ul class="dropdown">
-                        <li><a href="#">Technicals</a></li>
-                        <li><a href="#">Decorations</a></li>
-                        <li><a href="#">Logistics</a></li>
-                        <li><a href="#">Documentation</a></li>
-                    </ul>
+                    <button class="nav-pill nav-pill-size" aria-expanded="false">Committees <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+                        <ul class="dropdown">
+                            <li><a href="#">Technicals</a></li>
+                            <li><a href="#">Decorations</a></li>
+                            <li><a href="#">Logistics</a></li>
+                            <li><a href="#">Documentation</a></li>
+                        </ul>
                 </li>
                 <li><a href="#about" class="nav-pill">About Us</a></li>
             </ul>
         </nav>
+<!-- ============ log in and sign in ============ -->
+    <div class="nav-actions">
+        <a href="#" class="link-ghost">LOG IN</a>
+            <span class="divider" aria-hidden="true">
+            </span>
 
-        <div class="nav-actions">
-            <a href="#" class="link-ghost">LOG IN</a>
-            <span class="divider" aria-hidden="true"></span>
-            <a href="#" class="link-ghost">SIGN UP</a>
+        <a href="#" class="link-ghost">SIGN UP</a>
             <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
-                <span></span><span></span><span></span>
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
         </div>
     </div>
@@ -71,17 +75,16 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="top">
-    <div class="hero-grid">
-         <box class="hero-pitch">
+        <div class="hero-pitch">
                 <img src="assets/toptext.svg" alt="description">
-                        <div> <p class="aspirants">ASPIRANTS,</p>
+                        <div> 
+                            <p class="aspirants">ASPIRANTS,</p>
                             <h1 class = "line">Find where your skills<br>can make an impact.</h1>
-                            </div>
-                        <div>
-                    <p class="spotlight-caption">Connect with university committees that match your responsibility, interests, and availability.</p>
-                </div>
-        </box>
-    </div>
+                        </div>
+                    <div>
+                <p class="spotlight-caption">Connect with university committees that match your responsibility, interests, and availability.</p>
+            </div>
+        </div>
     <div class = "hero-box-for-search">
         <form class="hero-search" role="search" action="#" method="get">
             <input type="search" name="q" placeholder="Organizations, People, Skills…" aria-label="Search tab">
@@ -92,54 +95,52 @@
 </section>
 
 <!-- ============ CATEGORIES ============ -->
-<section class="categories" id="aspirants">
-    <div class="categories-grid">
+<section class="categories">
+    <div class="categories-inner">
+            <div class="categories-grid">
+                <div class="category-card" style="--i:0"> 
+                    <img src="assets/category-individual.jpg" alt="Individual Aspirants">
+                        <button class="category-tag" type="button" onclick="location.href='#individual-aspirants'">
+                            INDIVIDUAL<br><small>ASPIRANTS</small>
+                        </button>
+                    </div>
+                
+                <div class="category-card" style="--i:1" >
+                    <img src="assets/category-independent.jpg" alt="Independent Clients">
+                        <button class="category-tag" type="button" onclick="location.href='#independent-client'">
+                            INDEPENDENT<br><small>CLIENT</small> 
+                        </button>
+                    </div>
 
-<!-- ============ individual picture cards ============ -->
-        <div class="category-card" style="--i:0"> 
-            <img src="assets/category-individual.jpg" alt="Individual Aspirants">
-                <button class="category-tag" type="button" onclick="location.href='#aspirants-individual'">
-                    INDIVIDUAL<br><small>ASPIRANTS</small>
-                </button>
+                <div class="category-card" style="--i:2">
+                    <img src="assets/category-organization.jpg" alt="Organization Clients">
+                        <button class="category-tag" type="button" onclick="location.href='#organization-client'">
+                            ORGANIZATION<br> <small>CLIENT</small> 
+                    </button>
+                </div>
             </div>
-        
-        <div class="category-card" style="--i:1" >
-            <img src="assets/category-independent.jpg" alt="Independent Clients">
-                <button class="category-tag" type="button" onclick="location.href='#independent-client'">
-                    INDEPENDENT<br><small>CLIENT</small> 
-                </button>
-            </div>
-
-        <div class="category-card" style="--i:2">
-            <img src="assets/category-organization.jpg" alt="Organization Clients">
-                <button class="category-tag" type="button" onclick="location.href='#aspirants-individual'">
-                    ORGANIZATION<br> <small>CLIENT</small> 
-                </button>
-            </div>
-    </div>
-
-<!-- ============ thin square below the cards ============ -->
-    <div class="categories-copy">
 
 <!-- ============ engaging text ============ -->
+    <div class="categories-copy">
         <div class="thin-square"></div>
             <h2>FIND YOUR WAY TO THE RIGHT CONNECTION </h2>
-                <p>Where do you fit? 
+                <p id = "categories-description"> Where do you fit? 
                     <strong> Click and explore</strong> 
                     these paths to see which matches your goals and skills. Whether you're looking to contribute or build a team, start here.
                 </p>
         </div>
+    </div>
 </section>
 
 <!-- ============ COMMITTEES CAROUSEL ============ -->
- 
+
 <!-- ============ choices for carousel ============ -->
-    <div class="categories-links">
+<section class="carousel-section" id="committees">
+ <div class="categories-links">
         <a href="#committees" class="pill-link">Committees</a>
         <a href="#" class="pill-link">Organizations</a>
     </div>
 
-<section class="carousel-section" id="committees">
     <p class="carousel-kicker">Check out</p>
     <p class="carousel-subtext">Committee description &amp; registered organizations.</p>
 
