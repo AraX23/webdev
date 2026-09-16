@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $_SESSION['flash_message'] = 'Application withdrawn.';
   }
 
-  header('Location: index.php#committees');
+  $redirect = !empty($_POST['redirect_to']) ? $_POST['redirect_to'] : 'index.php#committees';
+  header('Location: ' . $redirect);
   exit;
 }

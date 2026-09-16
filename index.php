@@ -41,10 +41,10 @@ require_once __DIR__ . '/Validation.php';
                 <li class="has-dropdown">
                     <button class="nav-pill nav-pill-size" aria-expanded="false">Committees <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
                         <ul class="dropdown">
-                            <li><a href="#committees">Technicals</a></li>
-                            <li><a href="#committees">Decorations</a></li>
-                            <li><a href="#committees">Logistics</a></li>
-                            <li><a href="#committees">Documentation</a></li>
+                            <li><a href="committee.php?type=technicals">Technicals</a></li>
+                            <li><a href="committee.php?type=documentation">Documentation</a></li>
+                            <li><a href="committee.php?type=decorations">Decorations</a></li>
+                            <li><a href="committee.php?type=logistics">Logistics</a></li>
                         </ul>
                 </li>
                 <li><a href="#about" class="nav-pill">About Us</a></li>
@@ -60,7 +60,7 @@ require_once __DIR__ . '/Validation.php';
             <li><a href="#top">Home</a></li>
             <li><a href="#aspirants">Aspirants</a></li>
             <li><a href="#clients">Clients</a></li>
-            <li><a href="#committees">Committees</a></li>
+            <li><a href="committee.php">Committees</a></li>
             <li><a href="#about">About Us</a></li>
             <li><a href="contact.php">Contact Us</a></li>
             <li class="mobile-actions">
@@ -147,7 +147,7 @@ require_once __DIR__ . '/Validation.php';
     <p class="carousel-kicker">Check out</p>
     <p class="carousel-subtext">Committee description &amp; registered organizations.</p>
 
-    <div class="carousel" data-committees='[{"key":"documentation","title":"Documentation","image":"assets/committee-documentation.jpg","desc":"Captures every milestone in photos, videos, and files, so nothing about the event goes unrecorded."},{"key":"technicals","title":"Technicals","image":"assets/committee-technicals.jpg","desc":"Handles the technical equipment, setup, and operations needed to ensure smooth event execution."},{"key":"decorations","title":"Decorations","image":"assets/committee-decorations.jpg","desc":"Shapes the look and feel of the venue, from overall layout down to the smallest visual details."}]'>
+    <div class="carousel" data-committees='[{"key":"documentation","title":"Documentation","image":"assets/committee-documentation.jpg","desc":"Captures every milestone in photos, videos, and files, so nothing about the event goes unrecorded."},{"key":"technicals","title":"Technicals","image":"assets/committee-technicals.jpg","desc":"Handles the technical equipment, setup, and operations needed to ensure smooth event execution."},{"key":"decorations","title":"Decorations","image":"assets/committee-decorations.jpg","desc":"Shapes the look and feel of the venue, from overall layout down to the smallest visual details."},{"key":"logistics","title":"Logistics","image":"assets/committee-technicals.jpg","desc":"Coordinates transportation, equipment, supply distributions, and venue setups to keep campus events running."}]'>
         <button class="carousel-arrow carousel-arrow--prev" aria-label="Previous committee" type="button">
             <svg viewBox="0 0 12 20" width="14" height="22"><path d="M10 2L2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -173,9 +173,9 @@ require_once __DIR__ . '/Validation.php';
     </div>
 
     <div class="carousel-description">
-        <h3 id="carouselTitle">Technicals</h3>
-        <p id="carouselDesc">Handles the technical equipment, setup, and operations needed to ensure smooth event execution.</p>
-        <a href="#" class="carousel-more">See more.</a>
+        <h3 id="carouselTitle">Documentation</h3>
+        <p id="carouselDesc">Captures every milestone in photos, videos, and files, so nothing about the event goes unrecorded.</p>
+        <a href="committee.php?type=documentation" class="carousel-more" id="carouselMoreBtn">See more.</a>
     </div>
 </section>
 

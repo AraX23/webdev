@@ -106,6 +106,157 @@ function getDatabase(): PDO
     $database->exec("UPDATE postings SET moderation_status = 'approved'");
   }
 
+  if ((int) $database->query('SELECT COUNT(*) FROM postings')->fetchColumn() === 0) {
+    $seedOrgs = [
+      [
+        'name' => 'Information Technology Society',
+        'email' => 'its@norsu.edu.ph',
+        'password' => password_hash('password123', PASSWORD_DEFAULT),
+        'role' => 'client',
+        'org_name' => 'Information Technology Organization (ITO / ITS)',
+        'program' => 'Bachelor of Science in Information Technology',
+        'bio' => 'The official academic student organization of the Information Technology department at Negros Oriental State University.'
+      ],
+      [
+        'name' => 'League of Student Organizations',
+        'email' => 'lso@norsu.edu.ph',
+        'password' => password_hash('password123', PASSWORD_DEFAULT),
+        'role' => 'client',
+        'org_name' => 'League of Student Organizations (LSO)',
+        'program' => 'Student Affairs Office',
+        'bio' => 'The umbrella organization overseeing and coordinating all recognized student groups, clubs, and events across NORSU.'
+      ],
+      [
+        'name' => 'Computer Science Guild',
+        'email' => 'csg@norsu.edu.ph',
+        'password' => password_hash('password123', PASSWORD_DEFAULT),
+        'role' => 'client',
+        'org_name' => 'Computer Science Guild (CSG)',
+        'program' => 'Bachelor of Science in Computer Science',
+        'bio' => 'Student organization fostering software engineering, algorithm competitions, and tech innovation at NORSU.'
+      ],
+      [
+        'name' => 'NORSU Red Cross Youth Council',
+        'email' => 'rcy@norsu.edu.ph',
+        'password' => password_hash('password123', PASSWORD_DEFAULT),
+        'role' => 'client',
+        'org_name' => 'NORSU Red Cross Youth Council',
+        'program' => 'Health & Community Services',
+        'bio' => 'University chapter committed to humanitarian work, disaster response preparedness, and campus health drives.'
+      ]
+    ];
+
+    $userInsert = $database->prepare('INSERT INTO users (name, email, password, role, org_name, program, bio) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    $orgIds = [];
+    foreach ($seedOrgs as $org) {
+      $existingId = $database->prepare('SELECT id FROM users WHERE email = ?');
+      $existingId->execute([$org['email']]);
+      $id = $existingId->fetchColumn();
+      if (!$id) {
+        $userInsert->execute([$org['name'], $org['email'], $org['password'], $org['role'], $org['org_name'], $org['program'], $org['bio']]);
+        $id = $database->lastInsertId();
+      }
+      $orgIds[$org['email']] = (int) $id;
+    }
+
+    $seedPostings = [
+      [
+        'client_id' => $orgIds['its@norsu.edu.ph'],
+        'category_id' => 'technicals',
+        'title' => 'AV & Live Stream Technical Crew',
+        'description' => 'Operate audio mixers, stage microphones, LED monitors, and manage YouTube/FB live stream broadcasts for IT assemblies and symposiums.',
+        'skills_needed' => 'Audio/Visual setup, OBS Studio / vMix, cable management, hardware diagnostics',
+        'slots' => 4,
+        'status' => 'open',
+        'moderation_status' => 'approved'
+      ],
+      [
+        'client_id' => $orgIds['csg@norsu.edu.ph'],
+        'category_id' => 'technicals',
+        'title' => 'Hackathon & Lab Technical Support Aide',
+        'description' => 'Configure LAN networking, maintain testing workstations, and resolve technical issues for student programmers during university hackathons.',
+        'skills_needed' => 'Basic networking, Linux / Windows setup, router configuration, troubleshooting',
+        'slots' => 3,
+        'status' => 'open',
+        'moderation_status' => 'approved'
+      ],
+      [
+        'client_id' => $orgIds['its@norsu.edu.ph'],
+        'category_id' => 'documentation',
+        'title' => 'Photo & Video Documentation Specialist',
+        'description' => 'Capture high-resolution photos and video highlights of all departmental events, draft caption stories, and curate the media repository.',
+        'skills_needed' => 'DSLR/Mirrorless camera operation, Adobe Lightroom / Premiere, creative storytelling',
+        'slots' => 3,
+        'status' => 'open',
+        'moderation_status' => 'approved'
+      ],
+      [
+        'client_id' => $orgIds['lso@norsu.edu.ph'],
+        'category_id' => 'documentation',
+        'title' => 'Campus Event Minutes & Media Archivist',
+        'description' => 'Record committee proceedings, draft official press releases for student publications, and archive event documentation portfolios.',
+        'skills_needed' => 'Technical writing, documentation filing, Google Workspace / MS Office, attention to detail',
+        'slots' => 2,
+        'status' => 'open',
+        'moderation_status' => 'approved'
+      ],
+      [
+        'client_id' => $orgIds['lso@norsu.edu.ph'],
+        'category_id' => 'decorations',
+        'title' => 'Stage Backdrop & Creative Production Team',
+        'description' => 'Conceptualize, craft, and assemble thematic stage backgrounds, entrance installations, and floral/podium arrangements for university festivities.',
+        'skills_needed' => 'Visual arts, backdrop fabrication, stage lighting concepts, craft craftsmanship',
+        'slots' => 4,
+        'status' => 'open',
+        'moderation_status' => 'approved'
+      ],
+      [
+        'client_id' => $orgIds['rcy@norsu.edu.ph'],
+        'category_id' => 'decorations',
+        'title' => 'Exhibition Booth & Poster Designer',
+        'description' => 'Design informative and visually striking advocacy booths, health fair exhibits, and campus bulletin board displays.',
+        'skills_needed' => 'Graphic design, layout planning, poster printing coordination, creative styling',
+        'slots' => 2,
+        'status' => 'open',
+        'moderation_status' => 'approved'
+      ],
+      [
+        'client_id' => $orgIds['lso@norsu.edu.ph'],
+        'category_id' => 'logistics',
+        'title' => 'University Arena Logistics & Floor Coordinator',
+        'description' => 'Manage stage ingress/egress, transport sound and furniture equipment, oversee delegate registration booths, and enforce event timetables.',
+        'skills_needed' => 'Physical inventory, teamwork, time management, crowd coordination',
+        'slots' => 6,
+        'status' => 'open',
+        'moderation_status' => 'approved'
+      ],
+      [
+        'client_id' => $orgIds['rcy@norsu.edu.ph'],
+        'category_id' => 'logistics',
+        'title' => 'First-Aid Station & Supply Logistics Officer',
+        'description' => 'Organize first-aid response posts, track emergency supplies and medical inventory, and assist marshals during campus mass gatherings.',
+        'skills_needed' => 'Inventory tracking, emergency response awareness, orderly coordination',
+        'slots' => 3,
+        'status' => 'open',
+        'moderation_status' => 'approved'
+      ]
+    ];
+
+    $postStmt = $database->prepare('INSERT INTO postings (client_id, category_id, title, description, skills_needed, slots, status, moderation_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+    foreach ($seedPostings as $post) {
+      $postStmt->execute([
+        $post['client_id'],
+        $post['category_id'],
+        $post['title'],
+        $post['description'],
+        $post['skills_needed'],
+        $post['slots'],
+        $post['status'],
+        $post['moderation_status']
+      ]);
+    }
+  }
+
   /* ---------------- applications ----------------
      status: pending | reviewed | accepted | declined | withdrawn */
   $database->exec("CREATE TABLE IF NOT EXISTS applications (

@@ -138,6 +138,10 @@ document.addEventListener('DOMContentLoaded', function() {
             var current = committees[activeIndex];
             if (titleEl) titleEl.textContent = current.title;
             if (descEl) descEl.textContent = current.desc;
+            var moreBtn = document.getElementById('carouselMoreBtn') || document.querySelector('.carousel-more');
+            if (moreBtn && current && current.key) {
+                moreBtn.href = 'committee.php?type=' + encodeURIComponent(current.key);
+            }
         }
 
         function renderCarousel() {
@@ -224,6 +228,18 @@ document.addEventListener('DOMContentLoaded', function() {
             followingSlide.addEventListener('click', function(event) {
                 event.preventDefault();
                 if (!isAnimating) goNext();
+            });
+        }
+
+        var centerSlide = getSlide('center');
+        if (centerSlide) {
+            centerSlide.style.cursor = 'pointer';
+            centerSlide.setAttribute('title', 'Click to view committee openings');
+            centerSlide.addEventListener('click', function() {
+                var current = committees[activeIndex];
+                if (current && current.key) {
+                    window.location.href = 'committee.php?type=' + encodeURIComponent(current.key);
+                }
             });
         }
 

@@ -58,6 +58,24 @@ if ($role === 'aspirant') {
   $appsStatement->execute([$profile['id']]);
   $myApplications = $appsStatement->fetchAll(PDO::FETCH_ASSOC);
 
+  // Committees with active opening counts for exploration
+  $dashCommittees = $database->query("
+    SELECT categories.*,
+           (SELECT COUNT(*) FROM postings
+            WHERE postings.category_id = categories.id
+              AND postings.status = 'open'
+              AND (postings.moderation_status = 'approved' OR postings.moderation_status IS NULL)
+           ) AS openings_count
+    FROM categories
+    ORDER BY CASE categories.id
+      WHEN 'technicals' THEN 1
+      WHEN 'documentation' THEN 2
+      WHEN 'decorations' THEN 3
+      WHEN 'logistics' THEN 4
+      ELSE 5
+    END ASC
+  ")->fetchAll(PDO::FETCH_ASSOC);
+
 } elseif ($role === 'client') {
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
@@ -150,7 +168,15 @@ if ($role === 'aspirant') {
         <li><a href="index.php" class="nav-pill">Home</a></li>
         <li><a href="index.php#aspirants" class="nav-pill">Aspirants</a></li>
         <li><a href="index.php#clients" class="nav-pill">Clients</a></li>
-        <li><a href="index.php#committees" class="nav-pill">Committees</a></li>
+        <li class="has-dropdown">
+          <button class="nav-pill nav-pill-size" aria-expanded="false">Committees <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+          <ul class="dropdown">
+            <li><a href="committee.php?type=technicals">Technicals</a></li>
+            <li><a href="committee.php?type=documentation">Documentation</a></li>
+            <li><a href="committee.php?type=decorations">Decorations</a></li>
+            <li><a href="committee.php?type=logistics">Logistics</a></li>
+          </ul>
+        </li>
         <li><a href="contact.php" class="nav-pill">Contact</a></li>
       </ul>
     </nav>
