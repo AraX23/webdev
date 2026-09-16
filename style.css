@@ -1044,6 +1044,19 @@ button { font-family: inherit; cursor: pointer; }
     padding: 4px;
     border-radius: var(--radius-sm);
 }
+.role-toggle--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+.role-toggle--3 .role-toggle-btn {
+    font-size: 0.82rem;
+    padding: 0.6rem 0.35rem;
+    text-align: center;
+}
+@media (max-width: 580px) {
+    .role-toggle--3 {
+        grid-template-columns: 1fr;
+    }
+}
 .role-toggle-btn {
     padding: 0.6rem;
     border: none;

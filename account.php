@@ -65,6 +65,7 @@ if ($role === 'aspirant') {
             WHERE postings.category_id = categories.id
               AND postings.status = 'open'
               AND (postings.moderation_status = 'approved' OR postings.moderation_status IS NULL)
+              AND postings.slots > (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id AND status = 'accepted')
            ) AS openings_count
     FROM categories
     ORDER BY CASE categories.id
@@ -89,9 +90,21 @@ if ($role === 'aspirant') {
       if ($title === '' || $categoryId === '') {
         $_SESSION['flash_message'] = 'Title and category are required.';
       } else {
-        $stmt = $database->prepare('INSERT INTO postings (client_id, category_id, title, description, skills_needed, slots, status, moderation_status) VALUES (?, ?, ?, ?, ?, ?, "open", "pending")');
+        $stmt = $database->prepare('INSERT INTO postings (client_id, category_id, title, description, skills_needed, slots, status, moderation_status) VALUES (?, ?, ?, ?, ?, ?, "open", "approved")');
         $stmt->execute([$profile['id'], $categoryId, $title, $description, $skillsNeeded, $slots]);
-        $_SESSION['flash_message'] = 'Opening submitted for moderation. It will appear on the site once approved.';
+        $_SESSION['flash_message'] = 'Opening posted successfully! It is now live on the committee page.';
+      }
+      header('Location: account.php');
+      exit;
+    } elseif ($action === 'delete_posting' || $action === 'remove_posting') {
+      $postingId = (int) ($_POST['posting_id'] ?? 0);
+      $check = $database->prepare('SELECT title FROM postings WHERE id = ? AND client_id = ?');
+      $check->execute([$postingId, $profile['id']]);
+      $title = $check->fetchColumn();
+      if ($title !== false) {
+        $database->prepare('DELETE FROM applications WHERE posting_id = ?')->execute([$postingId]);
+        $database->prepare('DELETE FROM postings WHERE id = ? AND client_id = ?')->execute([$postingId, $profile['id']]);
+        $_SESSION['flash_message'] = 'Opening "' . $title . '" has been permanently removed.';
       }
       header('Location: account.php');
       exit;
@@ -127,7 +140,8 @@ if ($role === 'aspirant') {
 
   $postingsStmt = $database->prepare("
     SELECT postings.*, categories.name AS category_name,
-           (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id) AS applicant_count
+           (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id) AS applicant_count,
+           (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id AND status = 'accepted') AS accepted_count
     FROM postings
     JOIN categories ON categories.id = postings.category_id
     WHERE postings.client_id = ?

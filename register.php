@@ -22,33 +22,62 @@ function safeNextUrl(?string $next): ?string
 $nextUrl = safeNextUrl($_GET['next'] ?? $_POST['next'] ?? null);
 $database = getDatabase();
 $error = '';
-$role = $_POST['role'] ?? ($_GET['role'] ?? 'aspirant');
-if (!in_array($role, ['aspirant', 'client'], true)) {
-  $role = 'aspirant';
+
+$accountType = $_POST['account_type'] ?? ($_GET['type'] ?? $_GET['role'] ?? 'aspirant');
+if (!in_array($accountType, ['aspirant', 'organization_client', 'independent_client', 'client'], true)) {
+  $accountType = 'aspirant';
+}
+if ($accountType === 'client') {
+  $accountType = 'organization_client';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $name = trim($_POST['name'] ?? '');
-  $email = strtolower(trim($_POST['email'] ?? ''));
   $password = $_POST['password'] ?? '';
   $confirmPassword = $_POST['confirm_password'] ?? '';
-  $orgName = trim($_POST['org_name'] ?? '');
-  $program = trim($_POST['program'] ?? '');
-  $yearLevel = trim($_POST['year_level'] ?? '');
-  $skills = trim($_POST['skills'] ?? '');
 
-  $error = validateRegistrationFields($name, $email, $password, $confirmPassword, $role);
-  if ($error === '' && $role === 'client' && $orgName === '') {
-    $error = 'Please enter your organization or business name.';
+  if ($accountType === 'organization_client') {
+    $role = 'client';
+    $clientType = 'organization';
+    $orgName = trim($_POST['org_name'] ?? '');
+    $name = trim($_POST['org_rep_name'] ?? $_POST['name'] ?? '');
+    if ($name === '' && $orgName !== '') {
+      $name = $orgName;
+    }
+    $email = strtolower(trim($_POST['org_email'] ?? $_POST['email'] ?? ''));
+    $program = '';
+    $yearLevel = '';
+    $skills = '';
+  } elseif ($accountType === 'independent_client') {
+    $role = 'client';
+    $clientType = 'independent';
+    $name = trim($_POST['ind_name'] ?? $_POST['name'] ?? '');
+    $email = strtolower(trim($_POST['ind_email'] ?? $_POST['email'] ?? ''));
+    $orgName = trim($_POST['ind_project'] ?? $_POST['org_name'] ?? '');
+    $program = '';
+    $yearLevel = '';
+    $skills = '';
+  } else {
+    $role = 'aspirant';
+    $clientType = '';
+    $name = trim($_POST['aspirant_name'] ?? $_POST['name'] ?? '');
+    $email = strtolower(trim($_POST['aspirant_email'] ?? $_POST['email'] ?? ''));
+    $orgName = '';
+    $program = trim($_POST['program'] ?? '');
+    $yearLevel = trim($_POST['year_level'] ?? '');
+    $skills = trim($_POST['skills'] ?? '');
   }
+
+  $error = validateRegistrationFields($name, $email, $password, $confirmPassword, $role, $clientType, $orgName);
 
   if ($error === '') {
     try {
-      $statement = $database->prepare('INSERT INTO users (name, email, password, role, org_name, program, year_level, skills) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-      $statement->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), $role, $orgName, $program, $yearLevel, $skills]);
+      $statement = $database->prepare('INSERT INTO users (name, email, password, role, client_type, org_name, program, year_level, skills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+      $statement->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), $role, $clientType, $orgName, $program, $yearLevel, $skills]);
       $_SESSION['user_id'] = (int) $database->lastInsertId();
       $_SESSION['user_name'] = $name;
       $_SESSION['role'] = $role;
+      $_SESSION['client_type'] = $clientType;
+      $_SESSION['org_name'] = $orgName;
       unset($_SESSION['is_admin']);
       header('Location: ' . ($nextUrl ?: 'account.php'));
       exit;
@@ -72,24 +101,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <form class="auth-card" method="post">
     <div class="eyebrow">ComMEETtee</div>
     <h1 class="display">Join ComMEETtee</h1>
-    <p class="form-intro">Tell us how you'd like to use ComMEETtee.</p>
+    <p class="form-intro">Choose your account type to get started.</p>
 
-    <div class="role-toggle" role="tablist" aria-label="Account type">
-      <button type="button" class="role-toggle-btn <?php echo $role === 'aspirant' ? 'is-active' : ''; ?>" data-role-btn="aspirant">I'm an Aspirant</button>
-      <button type="button" class="role-toggle-btn <?php echo $role === 'client' ? 'is-active' : ''; ?>" data-role-btn="client">I'm a Client</button>
+    <div class="role-toggle role-toggle--3" role="tablist" aria-label="Account type">
+      <button type="button" class="role-toggle-btn <?php echo $accountType === 'aspirant' ? 'is-active' : ''; ?>" data-role-btn="aspirant">Aspirant</button>
+      <button type="button" class="role-toggle-btn <?php echo $accountType === 'organization_client' ? 'is-active' : ''; ?>" data-role-btn="organization_client">Organization Client</button>
+      <button type="button" class="role-toggle-btn <?php echo $accountType === 'independent_client' ? 'is-active' : ''; ?>" data-role-btn="independent_client">Independent Client</button>
     </div>
-    <input type="hidden" name="role" id="register-role" value="<?php echo htmlspecialchars($role); ?>">
+    <input type="hidden" name="account_type" id="register-role" value="<?php echo htmlspecialchars($accountType); ?>">
 
     <?php if ($error): ?><p class="form-error"><?php echo htmlspecialchars($error); ?></p><?php endif; ?>
     <?php if ($nextUrl): ?><input type="hidden" name="next" value="<?php echo htmlspecialchars($nextUrl); ?>"><?php endif; ?>
 
-    <label>Full Name<input type="text" name="name" required autocomplete="name"></label>
-    <label>Email<input type="email" name="email" required autocomplete="email"></label>
-
-    <div data-role-field="client" <?php echo $role !== 'client' ? 'hidden' : ''; ?>>
-      <label>Organization / Business Name<input type="text" name="org_name" autocomplete="organization"></label>
-    </div>
-    <div data-role-field="aspirant" <?php echo $role !== 'aspirant' ? 'hidden' : ''; ?>>
+    <!-- ASPIRANT FIELDS -->
+    <div data-role-field="aspirant" <?php echo $accountType !== 'aspirant' ? 'hidden' : ''; ?>>
+      <label>Full Name<input type="text" name="aspirant_name" autocomplete="name" placeholder="e.g. Maria Santos" <?php echo $accountType === 'aspirant' ? 'required' : 'disabled'; ?>></label>
+      <label>Student / Personal Email<input type="email" name="aspirant_email" autocomplete="email" placeholder="e.g. maria@norsu.edu.ph" <?php echo $accountType === 'aspirant' ? 'required' : 'disabled'; ?>></label>
       <label>Program
         <select name="program">
           <option value="">Select your program…</option>
@@ -106,7 +133,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <?php endforeach; ?>
         </select>
       </label>
-      <label>Skills &amp; Interests<input type="text" name="skills" placeholder="e.g. Graphic Design, Video Editing" autocomplete="off"></label>
+      <label>Skills &amp; Interests<input type="text" name="skills" placeholder="e.g. Graphic Design, Video Editing, Sound Mixing" autocomplete="off"></label>
+    </div>
+
+    <!-- ORGANIZATION CLIENT FIELDS -->
+    <div data-role-field="organization_client" <?php echo $accountType !== 'organization_client' ? 'hidden' : ''; ?>>
+      <label>Organization Name<input type="text" name="org_name" autocomplete="organization" placeholder="e.g. Information Technology Organization (ITO / ITS)" <?php echo $accountType === 'organization_client' ? 'required' : 'disabled'; ?>></label>
+      <label>Representative / Officer Name<input type="text" name="org_rep_name" autocomplete="name" placeholder="e.g. Maria Santos (President)" <?php echo $accountType === 'organization_client' ? 'required' : 'disabled'; ?>></label>
+      <label>Organization Email / Login<input type="email" name="org_email" autocomplete="email" placeholder="e.g. its@norsu.edu.ph" <?php echo $accountType === 'organization_client' ? 'required' : 'disabled'; ?>></label>
+      <p class="field-hint" style="font-size:0.8rem; color:var(--ink-soft); margin-top:-0.4rem; margin-bottom:0.8rem;">You can use this organization email or organization name to log in later.</p>
+    </div>
+
+    <!-- INDEPENDENT CLIENT FIELDS -->
+    <div data-role-field="independent_client" <?php echo $accountType !== 'independent_client' ? 'hidden' : ''; ?>>
+      <label>Full Name<input type="text" name="ind_name" autocomplete="name" placeholder="e.g. Engr. Roberto Gomez" <?php echo $accountType === 'independent_client' ? 'required' : 'disabled'; ?>></label>
+      <label>Email (for login)<input type="email" name="ind_email" autocomplete="email" placeholder="e.g. roberto@example.com" <?php echo $accountType === 'independent_client' ? 'required' : 'disabled'; ?>></label>
+      <label>Project / Department (Optional)<input type="text" name="ind_project" placeholder="e.g. Campus Hackathon Committee, Event Chair"></label>
     </div>
 
     <label>Password

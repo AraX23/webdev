@@ -71,10 +71,17 @@ function yearLevelOptions(): array
  * Validates the registration fields shared by register.php's Aspirant and
  * Client tabs. $role controls which extra field is required.
  */
-function validateRegistrationFields(string $name, string $email, string $password, string $confirmPassword, string $role): string
+function validateRegistrationFields(string $name, string $email, string $password, string $confirmPassword, string $role, string $clientType = '', string $orgName = ''): string
 {
-  if ($name === '') {
-    return 'Please enter your name.';
+  if ($role === 'client' && $clientType === 'organization') {
+    if (trim($orgName) === '') {
+      return 'Please enter your organization name.';
+    }
+  }
+  if (trim($name) === '') {
+    return ($role === 'client' && $clientType === 'organization')
+      ? 'Please enter the representative or contact person name.'
+      : 'Please enter your full name.';
   }
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     return 'Please enter a valid email address.';

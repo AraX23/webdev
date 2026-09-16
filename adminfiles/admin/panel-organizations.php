@@ -4,11 +4,12 @@
     <p class="dash-empty">No client organizations yet.</p>
   <?php else: ?>
     <table class="dash-table">
-      <thead><tr><th>Organization</th><th>Contact</th><th>Email</th><th>Postings</th><th>Accepted</th><th>Status</th><th></th></tr></thead>
+      <thead><tr><th>Organization / Name</th><th>Type</th><th>Contact</th><th>Email</th><th>Postings</th><th>Accepted</th><th>Status</th><th></th></tr></thead>
       <tbody>
         <?php foreach ($allOrganizations as $organization): ?>
           <tr>
-            <td><?php echo htmlspecialchars($organization['org_name'] ?: '—'); ?></td>
+            <td><strong><?php echo htmlspecialchars($organization['org_name'] ?: $organization['name']); ?></strong></td>
+            <td><span class="dash-badge"><?php echo htmlspecialchars(($organization['client_type'] ?? '') === 'independent' ? 'Independent' : 'Organization'); ?></span></td>
             <td><?php echo htmlspecialchars($organization['name']); ?></td>
             <td><?php echo htmlspecialchars($organization['email']); ?></td>
             <td><?php echo (int) $organization['posting_count']; ?></td>

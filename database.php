@@ -59,6 +59,7 @@ function getDatabase(): PDO
     email VARCHAR(255) NOT NULL UNIQUE,
     password TEXT NOT NULL,
     role VARCHAR(20) NOT NULL DEFAULT 'aspirant',
+    client_type VARCHAR(50) NOT NULL DEFAULT '',
     status VARCHAR(20) NOT NULL DEFAULT 'active',
     avatar VARCHAR(255) NOT NULL DEFAULT '',
     org_name VARCHAR(255) NOT NULL DEFAULT '',
@@ -69,6 +70,16 @@ function getDatabase(): PDO
     bio VARCHAR(1000) NOT NULL DEFAULT '',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
   ) ENGINE=InnoDB");
+
+  $hasClientType = (int) $database->query("
+    SELECT COUNT(*) FROM information_schema.columns
+    WHERE table_schema = DATABASE() AND table_name = 'users' AND column_name = 'client_type'
+  ")->fetchColumn();
+  if (!$hasClientType) {
+    $database->exec("ALTER TABLE users ADD COLUMN client_type VARCHAR(50) NOT NULL DEFAULT '' AFTER role");
+    $database->exec("UPDATE users SET client_type = 'organization' WHERE role = 'client' AND org_name != ''");
+    $database->exec("UPDATE users SET client_type = 'independent' WHERE role = 'client' AND (org_name IS NULL OR org_name = '')");
+  }
 
   $adminStatement = $database->prepare('SELECT id FROM users WHERE email = ?');
   $adminStatement->execute(['admin@commeettee.local']);
@@ -170,14 +181,14 @@ function getDatabase(): PDO
       ]
     ];
 
-    $userInsert = $database->prepare('INSERT INTO users (name, email, password, role, org_name, program, bio) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    $userInsert = $database->prepare('INSERT INTO users (name, email, password, role, client_type, org_name, program, bio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
     $orgIds = [];
     foreach ($seedOrgs as $org) {
       $existingId = $database->prepare('SELECT id FROM users WHERE email = ?');
       $existingId->execute([$org['email']]);
       $id = $existingId->fetchColumn();
       if (!$id) {
-        $userInsert->execute([$org['name'], $org['email'], $org['password'], $org['role'], $org['org_name'], $org['program'], $org['bio']]);
+        $userInsert->execute([$org['name'], $org['email'], $org['password'], $org['role'], 'organization', $org['org_name'], $org['program'], $org['bio']]);
         $id = $database->lastInsertId();
       }
       $orgIds[$org['email']] = (int) $id;

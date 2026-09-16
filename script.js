@@ -274,20 +274,28 @@ document.addEventListener('DOMContentLoaded', function() {
     var roleButtons = document.querySelectorAll('[data-role-btn]');
     var roleInput = document.getElementById('register-role');
     if (roleButtons.length && roleInput) {
+        function activateRole(selectedRole) {
+            roleButtons.forEach(function(b) {
+                if (b.dataset.roleBtn === selectedRole) {
+                    b.classList.add('is-active');
+                } else {
+                    b.classList.remove('is-active');
+                }
+            });
+            roleInput.value = selectedRole;
+
+            document.querySelectorAll('[data-role-field]').forEach(function(field) {
+                var isMatch = field.dataset.roleField === selectedRole;
+                field.hidden = !isMatch;
+                field.querySelectorAll('input, select, textarea').forEach(function(input) {
+                    input.disabled = !isMatch;
+                });
+            });
+        }
+
         roleButtons.forEach(function(btn) {
             btn.addEventListener('click', function() {
-                var selectedRole = btn.dataset.roleBtn;
-                roleButtons.forEach(function(b) { b.classList.remove('is-active'); });
-                btn.classList.add('is-active');
-                roleInput.value = selectedRole;
-
-                document.querySelectorAll('[data-role-field]').forEach(function(field) {
-                    if (field.dataset.roleField === selectedRole) {
-                        field.hidden = false;
-                    } else {
-                        field.hidden = true;
-                    }
-                });
+                activateRole(btn.dataset.roleBtn);
             });
         });
     }

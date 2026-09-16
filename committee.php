@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/Validation.php';
 
@@ -25,11 +27,57 @@ foreach ($categories as $cat) {
   }
 }
 
+// Handle Apply / Withdraw actions directly on this page
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+  $action = $_POST['action'];
+  $postingId = (int) ($_POST['posting_id'] ?? 0);
+
+  if (!isLoggedIn()) {
+    $_SESSION['flash_message'] = 'Please log in as an Aspirant to apply.';
+    header('Location: login.php?next=' . urlencode('committee.php?type=' . $selectedType));
+    exit;
+  }
+
+  if (!isAspirant()) {
+    $_SESSION['flash_message'] = 'Only Aspirant accounts can apply to postings.';
+    header('Location: committee.php?type=' . urlencode($selectedType));
+    exit;
+  }
+
+  $aspirantId = (int) $_SESSION['user_id'];
+
+  if ($action === 'apply' && $postingId) {
+    $statement = $database->prepare("SELECT slots, (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id AND status = 'accepted') AS filled FROM postings WHERE id = ? AND status = 'open'");
+    $statement->execute([$postingId]);
+    $posting = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$posting) {
+      $_SESSION['flash_message'] = 'That posting is no longer available.';
+    } elseif ((int) $posting['filled'] >= (int) $posting['slots']) {
+      $_SESSION['flash_message'] = 'That posting is already full.';
+    } else {
+      $insertStatement = $database->prepare('
+        INSERT INTO applications (aspirant_id, posting_id, status)
+        VALUES (?, ?, "pending")
+        ON DUPLICATE KEY UPDATE status = "pending", created_at = CURRENT_TIMESTAMP
+      ');
+      $insertStatement->execute([$aspirantId, $postingId]);
+      $_SESSION['flash_message'] = 'Application sent! You are now applying for this committee role.';
+    }
+  } elseif ($action === 'withdraw' && $postingId) {
+    $database->prepare("DELETE FROM applications WHERE aspirant_id = ? AND posting_id = ?")->execute([$aspirantId, $postingId]);
+    $_SESSION['flash_message'] = 'Application withdrawn.';
+  }
+
+  header('Location: committee.php?type=' . urlencode($selectedType));
+  exit;
+}
+
 // Fetch organizations with approved open postings for this committee
 $postingsStmt = $database->prepare("
   SELECT postings.*,
          users.name AS client_name,
          users.org_name,
+         users.client_type,
          users.email AS client_email,
          users.avatar AS client_avatar,
          (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id AND status = 'accepted') AS accepted_count,
@@ -40,6 +88,7 @@ $postingsStmt = $database->prepare("
   WHERE postings.category_id = ?
     AND postings.status = 'open'
     AND (postings.moderation_status = 'approved' OR postings.moderation_status IS NULL)
+    AND postings.slots > (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id AND status = 'accepted')
   ORDER BY postings.created_at DESC
 ");
 $postingsStmt->execute([$selectedType]);
@@ -151,6 +200,7 @@ unset($_SESSION['flash_message']);
           <?php foreach ($postings as $posting): ?>
             <?php
               $remainingSlots = max(0, (int) $posting['slots'] - (int) $posting['accepted_count']);
+              $isOrg = ($posting['client_type'] ?? '') === 'organization' || !empty($posting['org_name']);
               $orgDisplayName = !empty($posting['org_name']) ? $posting['org_name'] : $posting['client_name'];
               $myStatus = $myApplications[$posting['id']] ?? null;
               $isFull = ($remainingSlots === 0);
@@ -158,17 +208,28 @@ unset($_SESSION['flash_message']);
             <article class="committee-org-card">
               <!-- Org identity header -->
               <div class="org-card-header">
-                <div class="org-avatar-badge">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                  </svg>
+                <div class="org-avatar-badge" style="<?php echo !$isOrg ? 'background:rgba(2,132,199,0.1); color:#0284c7;' : ''; ?>">
+                  <?php if ($isOrg): ?>
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                  <?php else: ?>
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                  <?php endif; ?>
                 </div>
                 <div class="org-header-text">
                   <h3 class="org-name"><?php echo htmlspecialchars($orgDisplayName); ?></h3>
-                  <span class="org-verified-label">NORSU Student Organization</span>
+                  <?php if ($isOrg): ?>
+                    <span class="org-verified-label">NORSU Student Organization</span>
+                  <?php else: ?>
+                    <span class="org-verified-label" style="background:rgba(2,132,199,0.12); color:#0284c7; border-color:rgba(2,132,199,0.25);">Independent Client</span>
+                  <?php endif; ?>
                 </div>
               </div>
 
@@ -233,14 +294,13 @@ unset($_SESSION['flash_message']);
                   <?php elseif (isAspirant()): ?>
                     <?php if ($myStatus): ?>
                       <div class="app-status-wrap">
-                        <span class="application-status application-status--<?php echo htmlspecialchars($myStatus); ?>">
+                        <a href="account.php" class="application-status application-status--<?php echo htmlspecialchars($myStatus); ?>" title="View in My Applications" style="text-decoration:none;">
                           <?php echo htmlspecialchars(ucfirst($myStatus)); ?>
-                        </span>
+                        </a>
                         <?php if (in_array($myStatus, ['pending', 'reviewed'], true)): ?>
-                          <form action="actions/application-actions.php" method="post" style="display:inline;">
+                          <form method="post" style="display:inline;">
                             <input type="hidden" name="action" value="withdraw">
                             <input type="hidden" name="posting_id" value="<?php echo (int) $posting['id']; ?>">
-                            <input type="hidden" name="redirect_to" value="committee.php?type=<?php echo urlencode($selectedType); ?>">
                             <button type="submit" class="link-withdraw">Withdraw</button>
                           </form>
                         <?php endif; ?>
@@ -248,10 +308,9 @@ unset($_SESSION['flash_message']);
                     <?php elseif ($isFull): ?>
                       <button class="btn btn--disabled btn--sm" disabled>Slots Full</button>
                     <?php else: ?>
-                      <form action="actions/application-actions.php" method="post">
+                      <form method="post">
                         <input type="hidden" name="action" value="apply">
                         <input type="hidden" name="posting_id" value="<?php echo (int) $posting['id']; ?>">
-                        <input type="hidden" name="redirect_to" value="committee.php?type=<?php echo urlencode($selectedType); ?>">
                         <button type="submit" class="btn btn--orange btn--sm">Apply for Role</button>
                       </form>
                     <?php endif; ?>

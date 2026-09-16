@@ -34,14 +34,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $password = $_POST['password'] ?? '';
   $loginValue = strtolower($loginValue) === 'admin' ? 'admin@commeettee.local' : $loginValue;
 
-  $statement = $database->prepare('SELECT id, name, password, role, status FROM users WHERE email = ? OR LOWER(name) = LOWER(?) LIMIT 1');
-  $statement->execute([$loginValue, $loginValue]);
+  $statement = $database->prepare('
+    SELECT id, name, email, org_name, client_type, password, role, status
+    FROM users
+    WHERE email = ?
+       OR LOWER(name) = LOWER(?)
+       OR (org_name != "" AND LOWER(org_name) = LOWER(?))
+    LIMIT 1
+  ');
+  $statement->execute([$loginValue, $loginValue, $loginValue]);
   $user = $statement->fetch(PDO::FETCH_ASSOC);
 
   if ($user && password_verify($password, $user['password']) && ($user['status'] ?? 'active') !== 'banned') {
     $_SESSION['user_id'] = (int) $user['id'];
     $_SESSION['user_name'] = $user['name'];
     $_SESSION['role'] = $user['role'];
+    $_SESSION['client_type'] = $user['client_type'] ?? '';
+    $_SESSION['org_name'] = $user['org_name'] ?? '';
     $_SESSION['is_admin'] = $user['role'] === 'admin';
 
     if ($user['role'] === 'admin') {
@@ -78,7 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($nextUrl && !$error): ?><p class="form-intro">Log in to continue — we'll take you right back to what you were doing.</p><?php endif; ?>
     <?php if ($error): ?><p class="form-error"><?php echo htmlspecialchars($error); ?></p><?php endif; ?>
     <?php if ($nextUrl): ?><input type="hidden" name="next" value="<?php echo htmlspecialchars($nextUrl); ?>"><?php endif; ?>
-    <label>Username or Email<input type="text" name="email" required autocomplete="username"></label>
+    <label>Email, Organization Email, or Username
+      <input type="text" name="email" required autocomplete="username" placeholder="e.g. its@norsu.edu.ph or username">
+    </label>
     <label>Password
       <div class="password-input-wrap">
         <input type="password" name="password" id="login-password" required autocomplete="current-password">

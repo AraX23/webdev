@@ -25,13 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
   if (!isLoggedIn()) {
     $_SESSION['flash_message'] = 'Please log in as an Aspirant to apply.';
-    header('Location: index.php');
+    header('Location: ../login.php');
     exit;
   }
 
   if (!isAspirant()) {
     $_SESSION['flash_message'] = 'Only Aspirant accounts can apply to postings.';
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
   }
 
@@ -60,6 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
   }
 
   $redirect = !empty($_POST['redirect_to']) ? $_POST['redirect_to'] : 'index.php#committees';
+  if (!preg_match('#^(https?://|/)#', $redirect)) {
+    $redirect = '../' . ltrim($redirect, '/');
+  }
   header('Location: ' . $redirect);
   exit;
 }
