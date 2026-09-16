@@ -1,3 +1,8 @@
+<?php
+session_start();
+require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/Validation.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,36 +33,25 @@
                 <li class="has-dropdown">
                     <button class="nav-pill nav-pill-size" aria-expanded="false">Clients <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
                         <ul class="dropdown">
-                            <li><a href="#">All Clients</a></li>
-                            <li><a href="#">Independent Clients</a></li>
-                            <li><a href="#">Organization Client</a></li>
+                            <li><a href="#clients">All Clients</a></li>
+                            <li><a href="#independent-client">Independent Clients</a></li>
+                            <li><a href="#organization-client">Organization Client</a></li>
                         </ul>
                 </li>
                 <li class="has-dropdown">
                     <button class="nav-pill nav-pill-size" aria-expanded="false">Committees <svg class="chev" viewBox="0 0 12 8" width="10" height="7"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
                         <ul class="dropdown">
-                            <li><a href="#">Technicals</a></li>
-                            <li><a href="#">Decorations</a></li>
-                            <li><a href="#">Logistics</a></li>
-                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#committees">Technicals</a></li>
+                            <li><a href="#committees">Decorations</a></li>
+                            <li><a href="#committees">Logistics</a></li>
+                            <li><a href="#committees">Documentation</a></li>
                         </ul>
                 </li>
                 <li><a href="#about" class="nav-pill">About Us</a></li>
+                <li><a href="contact.php" class="nav-pill">Contact</a></li>
             </ul>
         </nav>
-<!-- ============ log in and sign in ============ -->
-    <div class="nav-actions">
-        <a href="#" class="link-ghost">LOG IN</a>
-            <span class="divider" aria-hidden="true">
-            </span>
-
-        <a href="#" class="link-ghost">SIGN UP</a>
-            <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
+        <?php include __DIR__ . '/includes/nav-actions.php'; ?>
     </div>
 
     <!-- mobile menu -->
@@ -68,7 +62,16 @@
             <li><a href="#clients">Clients</a></li>
             <li><a href="#committees">Committees</a></li>
             <li><a href="#about">About Us</a></li>
-            <li class="mobile-actions"><a href="#" class="link-ghost">Log In</a><a href="#" class="btn btn--orange">Sign Up</a></li>
+            <li><a href="contact.php">Contact Us</a></li>
+            <li class="mobile-actions">
+              <?php if (!empty($_SESSION['user_id'])): ?>
+                <a href="<?php echo !empty($_SESSION['is_admin']) ? 'adminfiles/admin.php' : 'account.php'; ?>" class="btn btn--orange">My Dashboard</a>
+                <a href="logout.php" class="link-ghost">Log Out</a>
+              <?php else: ?>
+                <a href="login.php" class="link-ghost">Log In</a>
+                <a href="register.php" class="btn btn--orange">Sign Up</a>
+              <?php endif; ?>
+            </li>
         </ul>
     </nav>
 </header>
@@ -181,7 +184,7 @@
     <div class="profile-copy">
         <h2>Set up your<br>profile now!</h2>
         <p><strong>Choose your role</strong> and complete <strong>your profile</strong> with the information that best represents you, including your skills, interests, experience, and availability. This helps <strong>ComMEETtee</strong> connect you with the right opportunities.</p>
-        <a href="#" class="btn btn--outline">Click Here!</a>
+        <a href="<?php echo !empty($_SESSION['user_id']) ? 'account.php' : 'register.php'; ?>" class="btn btn--outline">Click Here!</a>
     </div>
 
     <div class="profile-preview" aria-hidden="true">
@@ -232,7 +235,7 @@
             <p class="eyebrow eyebrow--dark">Every roster starts somewhere</p>
             <h2>Post a role. Fill the seat.</h2>
         </div>
-        <a href="#" class="btn btn--dark">Post an Opening</a>
+        <a href="<?php echo !empty($_SESSION['user_id']) ? 'account.php' : 'login.php?next=account.php'; ?>" class="btn btn--dark">Post an Opening</a>
     </div>
 </section>
 
@@ -254,46 +257,7 @@
     <p class="testimonials-tagline">Connect &bull; Co <span>Meet</span> &bull; Commit</p>
 </section>
 
-<!-- ============ FOOTER ============ -->
-<footer class="site-footer" id="about">
-    <div class="footer-top">
-        <div class="brand-logo-plate">
-            <img src="assets/logo.png" alt="ComMEETtee — where skills and responsibility meet" class="brand-logo brand-logo--footer">
-        </div>
-
-        <div class="footer-contacts">
-            <div class="footer-contact-block">
-                <h4>ComMEETtee</h4>
-                <p><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L14 13l5 2v4a2 2 0 0 1-2 2C9.5 21 3 14.5 3 6a2 2 0 0 1 1-2z" fill="currentColor"/></svg> +63 915 532 4760</p>
-                <p><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M13 21v-7h3l1-4h-4V7.5C13 6.3 13.3 5.5 15 5.5h2V2.1C16.7 2 15.5 2 14.2 2 11.5 2 9.5 3.6 9.5 6.5V10H6.5v4h3v7h3.5z" fill="currentColor"/></svg> ComMEETtee</p>
-                <p><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg> www.commeettee.com</p>
-            </div>
-
-            <div class="footer-contact-block">
-                <h4>CEO</h4>
-                <p><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L14 13l5 2v4a2 2 0 0 1-2 2C9.5 21 3 14.5 3 6a2 2 0 0 1 1-2z" fill="currentColor"/></svg> +63 977 654 4558</p>
-                <p><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M13 21v-7h3l1-4h-4V7.5C13 6.3 13.3 5.5 15 5.5h2V2.1C16.7 2 15.5 2 14.2 2 11.5 2 9.5 3.6 9.5 6.5V10H6.5v4h3v7h3.5z" fill="currentColor"/></svg> Ciara Amber Saycon</p>
-                <p><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 6l9 7 9-7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg> ciaraamberx23@gmail.com</p>
-            </div>
-        </div>
-
-        <div class="footer-cols">
-            <div>
-                <h4>Platform</h4>
-                <a href="#aspirants">Aspirants</a>
-                <a href="#clients">Clients</a>
-                <a href="#committees">Committees</a>
-            </div>
-            <div>
-                <h4>Company</h4>
-                <a href="#about">About Us</a>
-                <a href="#">Log In</a>
-                <a href="#">Sign Up</a>
-            </div>
-        </div>
-    </div>
-    <p class="footer-copy">&copy; 2026 ComMEETtee. All rights reserved.</p>
-</footer>
+<?php include __DIR__ . '/includes/footer.php'; ?>
 
 <script src="script.js"></script>
 </body>
