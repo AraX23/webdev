@@ -193,7 +193,7 @@ CREATE TABLE `postings` (
   KEY `category_id` (`category_id`),
   CONSTRAINT `postings_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `users` (`id`),
   CONSTRAINT `postings_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,6 +202,7 @@ CREATE TABLE `postings` (
 
 LOCK TABLES `postings` WRITE;
 /*!40000 ALTER TABLE `postings` DISABLE KEYS */;
+INSERT INTO `postings` VALUES (1,3,'technicals','AV & Live Stream Technical Crew','Operate audio mixers, stage microphones, LED monitors, and manage YouTube/FB live stream broadcasts for IT assemblies and symposiums.','Audio/Visual setup, OBS Studio / vMix, cable management, hardware diagnostics',4,'open','approved','','2026-09-16 22:33:06'),(2,5,'technicals','Hackathon & Lab Technical Support Aide','Configure LAN networking, maintain testing workstations, and resolve technical issues for student programmers during university hackathons.','Basic networking, Linux / Windows setup, router configuration, troubleshooting',3,'open','approved','','2026-09-16 22:33:06'),(3,3,'documentation','Photo & Video Documentation Specialist','Capture high-resolution photos and video highlights of all departmental events, draft caption stories, and curate the media repository.','DSLR/Mirrorless camera operation, Adobe Lightroom / Premiere, creative storytelling',3,'open','approved','','2026-09-16 22:33:06'),(4,4,'documentation','Campus Event Minutes & Media Archivist','Record committee proceedings, draft official press releases for student publications, and archive event documentation portfolios.','Technical writing, documentation filing, Google Workspace / MS Office, attention to detail',2,'open','approved','','2026-09-16 22:33:06'),(5,4,'decorations','Stage Backdrop & Creative Production Team','Conceptualize, craft, and assemble thematic stage backgrounds, entrance installations, and floral/podium arrangements for university festivities.','Visual arts, backdrop fabrication, stage lighting concepts, craft craftsmanship',4,'open','approved','','2026-09-16 22:33:06'),(6,6,'decorations','Exhibition Booth & Poster Designer','Design informative and visually striking advocacy booths, health fair exhibits, and campus bulletin board displays.','Graphic design, layout planning, poster printing coordination, creative styling',2,'open','approved','','2026-09-16 22:33:06'),(7,4,'logistics','University Arena Logistics & Floor Coordinator','Manage stage ingress/egress, transport sound and furniture equipment, oversee delegate registration booths, and enforce event timetables.','Physical inventory, teamwork, time management, crowd coordination',6,'open','approved','','2026-09-16 22:33:06'),(8,6,'logistics','First-Aid Station & Supply Logistics Officer','Organize first-aid response posts, track emergency supplies and medical inventory, and assist marshals during campus mass gatherings.','Inventory tracking, emergency response awareness, orderly coordination',3,'open','approved','','2026-09-16 22:33:06');
 /*!40000 ALTER TABLE `postings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -296,7 +297,7 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -305,7 +306,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Administrator','admin@commeettee.local','$2y$10$JtXkYbKmWhiEka5QczUmcuEuIj4gdPCPtRPd7M498oSNYknXbDwC6','admin','active','','','','','','','','2026-09-16 20:26:16');
+INSERT INTO `users` VALUES (1,'Administrator','admin@commeettee.local','$2y$10$JtXkYbKmWhiEka5QczUmcuEuIj4gdPCPtRPd7M498oSNYknXbDwC6','admin','active','','','','','','','','2026-09-16 20:26:16'),(2,'Ciara Amber Saycon','ciaraamberx23@gmail.com','$2y$10$2UrG8NTt8uSTVJnhY84D3uEtcJr8/u1Hdw6c2hddRq7mv0tZqvekK','aspirant','active','','','Bachelor of Science in Information Technology','3rd Year','Information Technology Society','','','2026-09-16 21:09:45'),(3,'Information Technology Society','its@norsu.edu.ph','$2y$10$ZjRVwVlaSlDVwOY9tQ/Z1O5eV4PNyILHRw8qnuIVILv2IJTTlKCeC','client','active','','Information Technology Organization (ITO / ITS)','Bachelor of Science in Information Technology','','','','The official academic student organization of the Information Technology department at Negros Oriental State University.','2026-09-16 22:33:06'),(4,'League of Student Organizations','lso@norsu.edu.ph','$2y$10$Hpe.4wOcM/OTqHIIOTG16.VUIclwTBPYmuw6l8OF0zrdR..r4b0s6','client','active','','League of Student Organizations (LSO)','Student Affairs Office','','','','The umbrella organization overseeing and coordinating all recognized student groups, clubs, and events across NORSU.','2026-09-16 22:33:06'),(5,'Computer Science Guild','csg@norsu.edu.ph','$2y$10$gfU6nLu4O7PAa4uv8kEdnONEJ2jO/HcX9mZxNEswg7fYsoGII1M1G','client','active','','Computer Science Guild (CSG)','Bachelor of Science in Computer Science','','','','Student organization fostering software engineering, algorithm competitions, and tech innovation at NORSU.','2026-09-16 22:33:06'),(6,'NORSU Red Cross Youth Council','rcy@norsu.edu.ph','$2y$10$0ox5IgqIK9fGm/OSk6WjheUsd.etNm0mNTREAMD1FI/VeINnM2a92','client','active','','NORSU Red Cross Youth Council','Health & Community Services','','','','University chapter committed to humanitarian work, disaster response preparedness, and campus health drives.','2026-09-16 22:33:06');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -318,4 +319,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-17  5:05:53
+-- Dump completed on 2026-09-17  6:54:39

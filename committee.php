@@ -32,8 +32,9 @@ $postingsStmt = $database->prepare("
          users.org_name,
          users.email AS client_email,
          users.avatar AS client_avatar,
-         (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id AND status = 'accepted') AS filled_count,
-         (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id) AS applicant_count
+         (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id AND status = 'accepted') AS accepted_count,
+         (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id AND status IN ('pending', 'reviewed')) AS applying_count,
+         (SELECT COUNT(*) FROM applications WHERE posting_id = postings.id AND status = 'accepted') AS filled_count
   FROM postings
   JOIN users ON users.id = postings.client_id
   WHERE postings.category_id = ?
@@ -49,7 +50,9 @@ $myApplications = [];
 if (isLoggedIn() && isAspirant()) {
   $myAppsStmt = $database->prepare("SELECT posting_id, status FROM applications WHERE aspirant_id = ?");
   $myAppsStmt->execute([$_SESSION['user_id']]);
-  $myApplications = $myAppsStmt->fetchAll(PDO::KEY_PAIR);
+  while ($row = $myAppsStmt->fetch(PDO::FETCH_ASSOC)) {
+    $myApplications[$row['posting_id']] = $row['status'];
+  }
 }
 
 $message = $_SESSION['flash_message'] ?? '';
@@ -147,7 +150,7 @@ unset($_SESSION['flash_message']);
         <div class="committee-grid">
           <?php foreach ($postings as $posting): ?>
             <?php
-              $remainingSlots = max(0, (int) $posting['slots'] - (int) $posting['filled_count']);
+              $remainingSlots = max(0, (int) $posting['slots'] - (int) $posting['accepted_count']);
               $orgDisplayName = !empty($posting['org_name']) ? $posting['org_name'] : $posting['client_name'];
               $myStatus = $myApplications[$posting['id']] ?? null;
               $isFull = ($remainingSlots === 0);
@@ -169,15 +172,31 @@ unset($_SESSION['flash_message']);
                 </div>
               </div>
 
-              <!-- Posting role title & slots -->
+              <!-- Posting role title & slots badge -->
               <div class="org-card-role-strip">
                 <h4 class="posting-role-title"><?php echo htmlspecialchars($posting['title']); ?></h4>
                 <div class="slots-pill <?php echo $isFull ? 'slots-pill--full' : ''; ?>">
                   <?php if ($isFull): ?>
                     Slots Filled
                   <?php else: ?>
-                    <strong><?php echo $remainingSlots; ?></strong> Aspirant<?php echo $remainingSlots === 1 ? '' : 's'; ?> Needed
+                    <strong><?php echo $remainingSlots; ?></strong> Slot<?php echo $remainingSlots === 1 ? '' : 's'; ?> Left
                   <?php endif; ?>
+                </div>
+              </div>
+
+              <!-- Committee Numbers / Metrics Grid -->
+              <div class="org-card-metrics-grid">
+                <div class="metric-col metric-col--target">
+                  <span class="metric-number"><?php echo (int) $posting['slots']; ?></span>
+                  <span class="metric-caption">Committee Slots</span>
+                </div>
+                <div class="metric-col metric-col--applying">
+                  <span class="metric-number"><?php echo (int) $posting['applying_count']; ?></span>
+                  <span class="metric-caption">Aspirants Applying</span>
+                </div>
+                <div class="metric-col metric-col--accepted">
+                  <span class="metric-number"><?php echo (int) $posting['accepted_count']; ?></span>
+                  <span class="metric-caption">Already Accepted</span>
                 </div>
               </div>
 

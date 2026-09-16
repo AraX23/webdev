@@ -46,12 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     } elseif ((int) $posting['filled'] >= (int) $posting['slots']) {
       $_SESSION['flash_message'] = 'That posting is already full.';
     } else {
-      $insertStatement = $database->prepare('INSERT IGNORE INTO applications (aspirant_id, posting_id) VALUES (?, ?)');
+      $insertStatement = $database->prepare('
+        INSERT INTO applications (aspirant_id, posting_id, status)
+        VALUES (?, ?, "pending")
+        ON DUPLICATE KEY UPDATE status = "pending", created_at = CURRENT_TIMESTAMP
+      ');
       $insertStatement->execute([$aspirantId, $postingId]);
-      $_SESSION['flash_message'] = 'Application sent — you can track its status from My Applications.';
+      $_SESSION['flash_message'] = 'Application sent! You are now applying for this committee role.';
     }
   } elseif ($action === 'withdraw' && $postingId) {
-    $database->prepare("DELETE FROM applications WHERE aspirant_id = ? AND posting_id = ? AND status IN ('pending', 'reviewed')")->execute([$aspirantId, $postingId]);
+    $database->prepare("DELETE FROM applications WHERE aspirant_id = ? AND posting_id = ?")->execute([$aspirantId, $postingId]);
     $_SESSION['flash_message'] = 'Application withdrawn.';
   }
 

@@ -13,16 +13,40 @@ function getDatabase(): PDO
     return $database;
   }
 
+  // Database credentials (defaults for local WAMP / XAMPP)
   $host = getenv('DB_HOST') ?: '127.0.0.1';
+  $port = getenv('DB_PORT') ?: '3306';
   $username = getenv('DB_USER') ?: 'root';
   $password = getenv('DB_PASS') ?: '';
-  $databaseName = 'commeettee';
+  $databaseName = getenv('DB_NAME') ?: 'commeettee';
 
-  $server = new PDO("mysql:host=$host;charset=utf8mb4", $username, $password);
-  $server->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  $server->exec("CREATE DATABASE IF NOT EXISTS `$databaseName` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-  $database = new PDO("mysql:host=$host;dbname=$databaseName;charset=utf8mb4", $username, $password);
-  $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  $connected = false;
+  $lastError = null;
+  $portsToTry = array_unique([$port, '3306', '3307']);
+
+  foreach ($portsToTry as $p) {
+    try {
+      $server = new PDO("mysql:host=$host;port=$p;charset=utf8mb4", $username, $password);
+      $server->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $server->exec("CREATE DATABASE IF NOT EXISTS `$databaseName` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+
+      $database = new PDO("mysql:host=$host;port=$p;dbname=$databaseName;charset=utf8mb4", $username, $password);
+      $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $connected = true;
+      break;
+    } catch (PDOException $e) {
+      $lastError = $e;
+    }
+  }
+
+  if (!$connected) {
+    die('<div style="font-family:sans-serif; padding:2rem; background:#fff3f3; color:#b3392c; border:1px solid #ffc9c9; border-radius:8px; max-width:600px; margin:3rem auto;">'
+      . '<h3 style="margin-top:0;">Database Connection Failed</h3>'
+      . '<p>Could not connect to MySQL server at <strong>' . htmlspecialchars($host) . '</strong> using user <strong>' . htmlspecialchars($username) . '</strong>.</p>'
+      . '<p><small>Error details: ' . htmlspecialchars($lastError ? $lastError->getMessage() : 'Unknown error') . '</small></p>'
+      . '<p>Please ensure your WampServer MySQL or MariaDB service is running.</p>'
+      . '</div>');
+  }
 
   /* ---------------- users ----------------
      role: 'aspirant' | 'client' | 'admin'

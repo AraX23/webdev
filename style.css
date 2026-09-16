@@ -1610,6 +1610,51 @@ button { font-family: inherit; cursor: pointer; }
     color: rgba(255,255,255,0.6);
     border-color: rgba(255,255,255,0.2);
 }
+.org-card-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 0.6rem;
+    text-align: center;
+}
+.metric-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.25rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+}
+.metric-col--target {
+    border-bottom: 3px solid var(--orange);
+}
+.metric-col--applying {
+    border-bottom: 3px solid #38bdf8;
+}
+.metric-col--accepted {
+    border-bottom: 3px solid #34d399;
+}
+.metric-number {
+    font-size: 1.5rem;
+    line-height: 1.1;
+    font-family: var(--font-display);
+    font-weight: var(--font-weight);
+}
+.metric-col--target .metric-number { color: var(--orange); }
+.metric-col--applying .metric-number { color: #38bdf8; }
+.metric-col--accepted .metric-number { color: #34d399; }
+.metric-caption {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.75);
+    margin-top: 0.35rem;
+    font-weight: 600;
+}
 .org-card-block-title {
     color: var(--orange);
     font-size: 0.78rem;
