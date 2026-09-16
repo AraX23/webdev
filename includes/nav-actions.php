@@ -3,8 +3,6 @@
     <?php if (!empty($_SESSION['is_admin'])): ?>
       <a href="adminfiles/admin.php" class="btn btn--dark" style="padding:0.45rem 1rem; font-size:0.85rem;">Admin Panel</a>
     <?php else: ?>
-      <a href="account.php" class="link-ghost" style="font-weight:bold;"><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Dashboard'); ?></a>
-      <span class="divider" aria-hidden="true"></span>
       <a href="account.php" class="link-ghost">Dashboard</a>
     <?php endif; ?>
     <span class="divider" aria-hidden="true"></span>

@@ -13,7 +13,7 @@ require_once __DIR__ . '/Validation.php';
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Climate+Crisis&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=<?php echo file_exists(__DIR__ . '/style.css') ? filemtime(__DIR__ . '/style.css') : time(); ?>">
 </head>
 <body>
 
@@ -65,7 +65,7 @@ require_once __DIR__ . '/Validation.php';
             <li><a href="contact.php">Contact Us</a></li>
             <li class="mobile-actions">
               <?php if (!empty($_SESSION['user_id'])): ?>
-                <a href="<?php echo !empty($_SESSION['is_admin']) ? 'adminfiles/admin.php' : 'account.php'; ?>" class="btn btn--orange">My Dashboard</a>
+                <a href="<?php echo !empty($_SESSION['is_admin']) ? 'adminfiles/admin.php' : 'account.php'; ?>" class="btn btn--orange">Dashboard</a>
                 <a href="logout.php" class="link-ghost">Log Out</a>
               <?php else: ?>
                 <a href="login.php" class="link-ghost">Log In</a>
@@ -194,7 +194,18 @@ require_once __DIR__ . '/Validation.php';
             </div>
             <p class="profile-name">Ciara Amber T. Saycon</p>
             <p class="profile-role">Graphic Designer <span>Aspirant</span></p>
-            <p class="profile-program">BS Information Technology · Year 3</p>
+
+            <div class="profile-info-group">
+                <p class="profile-info-label">Program:</p>
+                <p class="profile-info-val">BS Information Technology - 3</p>
+            </div>
+
+            <div class="profile-info-group">
+                <p class="profile-info-label">Contact Information:</p>
+                <p class="profile-info-val">+63 977 654 4558</p>
+                <p class="profile-info-val">ciaraamberx23@gmail.com</p>
+                <p class="profile-info-val">Ciara Amber T. Saycon</p>
+            </div>
         </div>
 
         <div class="profile-panels">
